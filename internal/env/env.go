@@ -1,7 +1,20 @@
 package env
 
+type Link struct {
+	Src string
+	Dst string
+}
+
+type Dir struct {
+	path string
+}
+
+type Pkg struct {
+	name string
+}
+
 type Env struct {
-	Src  string
-	Dst  string
-	Conf string
+	Links []Link
+	Dirs  []Dir
+	Pkgs  []Pkg
 }

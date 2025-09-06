@@ -2,35 +2,43 @@
 package envforge
 
 import (
-	"github.com/tuxikus/env-forge/internal/confgen"
+	"fmt"
+	"os"
 	"github.com/tuxikus/env-forge/internal/parser"
-	"github.com/tuxikus/env-forge/internal/status"
 )
 
-var _ EnvForge = (*envForge)(nil)
-
-type EnvForge interface {
-	Forge()
-}
-
-type envForge struct {
+type EnvForge struct {
 	ef string
 	p  parser.Parser
-	cg confgen.ConfigGenerator
-	sp status.StatusPrinter
 }
 
-func NewEnvForge(envFile string) *envForge {
-	sp := status.NewStatusPrinter()
-
-	return &envForge{
+func NewEnvForge(envFile string) *EnvForge {
+	return &EnvForge{
 		ef: envFile,
-		p:  parser.NewParser(),
-		cg: confgen.NewConfigGenerator(sp),
-		sp: sp,
+		p:  parser.Parser{},
 	}
 }
 
-func (ef *envForge) Forge() {
-	ef.cg.GenerateConfigs(ef.p.Parse(ef.ef))
+func (ef *EnvForge) Forge() {
+	env, err := ef.p.Parse(ef.ef)
+	if err != nil {
+		panic(err)
+	}
+	
+	for _, link := range env.Links {
+		err := os.Remove(link.Dst)
+		if err != nil {
+			panic(err)
+		}
+		
+		err = os.Symlink(link.Src, link.Dst)
+		if err != nil {
+			switch err.(type) {
+			case *os.LinkError:
+				fmt.Println(link.Dst, "already exists")
+			default:
+				panic(err)
+			}
+		}
+	}
 }
