@@ -6,10 +6,11 @@ import (
 	"fmt"
 	"io/fs"
 	"os"
-	"os/exec"
+	//"os/exec"
 
 	"github.com/tuxikus/env-forge/internal/env"
 	"github.com/tuxikus/env-forge/internal/parser"
+	"github.com/tuxikus/isthere"
 )
 
 type Forge struct {
@@ -84,16 +85,24 @@ func removeTailingNewline(input string) string {
 
 func checkPkgs(pkgs []env.Pkg) {
 	fmt.Println("Checking packages...")
-	var whichCmd *exec.Cmd
+	// var whichCmd *exec.Cmd
 	for _, pkg := range pkgs {
-		whichCmd = exec.Command("which", pkg.Name)
-		whichOut, err := whichCmd.Output()
+		isthereOutput, err := isthere.IsThere(pkg.Name)
 		if err != nil {
-			panic(err)
+			// At the moment just print the error
+			fmt.Println(err.Error())
+			continue
 		}
+		fmt.Println(isthereOutput)
 
-		whichOutStr := string(whichOut)
-		whichOutStr = removeTailingNewline(whichOutStr)
-		fmt.Println(whichOutStr)
+		// whichCmd = exec.Command("which", pkg.Name)
+		// whichOut, err := whichCmd.Output()
+		// if err != nil {
+		// 	panic(err)
+		// }
+
+		// whichOutStr := string(whichOut)
+		// whichOutStr = removeTailingNewline(whichOutStr)
+		// fmt.Println(whichOutStr)
 	}
 }
