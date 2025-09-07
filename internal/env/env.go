@@ -6,11 +6,11 @@ type Link struct {
 }
 
 type Dir struct {
-	path string
+	Path string
 }
 
 type Pkg struct {
-	name string
+	Name string
 }
 
 type Env struct {

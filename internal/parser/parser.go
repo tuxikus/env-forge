@@ -70,7 +70,11 @@ func (p *Parser) Parse(path string) (*env.Env, error) {
 			src, dst, _ := parseLinks(line)
 			links = append(links, env.Link{Src: src, Dst: dst})
 		case dirsSection:
+			dir := parseDir(line)
+			dirs = append(dirs, env.Dir{Path: dir})
 		case pkgsSection:
+			pkg := parsePkgs(line)
+			pkgs = append(pkgs, env.Pkg{Name: pkg})
 		}
 	}
 
@@ -100,6 +104,14 @@ func parseLinks(line string) (string, string, error) {
 	src = pwd + "/" + src
 	dst := replaceHome(strings.Split(line, " ")[1]) // no ~ in links
 	return src, dst, nil
+}
+
+func parseDir(line string) string {
+	return replaceHome(line)
+}
+
+func parsePkgs(line string) string {
+	return line
 }
 
 func getConf(path string) string {

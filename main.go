@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/tuxikus/env-forge/internal/envforge"
+	"github.com/tuxikus/env-forge/internal/forge"
 	"os"
 )
 
@@ -20,7 +20,7 @@ func main() {
 
 	fmt.Println("Setting up environment...")
 
-	envForge := envforge.NewEnvForge(eFile)
+	envForge := forge.NewForge(eFile)
 	envForge.Forge()
 
 	fmt.Println("Done! 🥳")
